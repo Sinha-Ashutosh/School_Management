@@ -27,7 +27,7 @@ const destroy = async (req, res) => {
     try{
         const school = await schoolServices.deleteSchool(req.params.id);
         return res.status(200).json({
-            data: response,
+            data: school,
             success: true,
             message: 'Successfully deleted a school',
             err: {}
@@ -85,9 +85,38 @@ const update = async (req, res) => {
     }
 }
 
+const listSchools = async (req, res) => {
+    try {
+        const { lat, lng } = req.userLocation;
+        const radius = req.query.radius ? parseFloat(req.query.radius) : null;
+
+        const schools = await schoolServices.listSchools(lat, lng, radius);
+
+        const formattedSchools = schools.map(schools => ({
+        id: schools.id,
+        name: schools.name,
+        address: schools.address,
+        latitude: schools.latitude,
+        longitude: schools.longitude,
+        distance: `${parseFloat(schools.distance).toFixed(2)} km`,
+        }));
+
+        return res.status(200).json({
+            data: formattedSchools,
+            success: true,
+            message: 'Successfully fetched the nearby schools',
+            err: {}
+        })
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+}
+
 module.exports = {
     create,
     destroy,
     update,
-    get
+    get,
+    listSchools
 }

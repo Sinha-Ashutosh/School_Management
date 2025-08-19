@@ -44,6 +44,18 @@ class SchoolServices {
         }
     }
 
+    async listSchools(lat, lng, radius) {
+        try {
+            const schools = await this.schoolRepository.listSchools(lat, lng, radius);
+            return schools.map((school) => ({
+            school,
+            distance: `${parseFloat(school.distance).toFixed(2)} km`,
+            }));
+        } catch (error) {
+            console.log("Something went wrong in the service layer");
+            throw error;
+        }
+    }
 }
 
 module.exports = SchoolServices;

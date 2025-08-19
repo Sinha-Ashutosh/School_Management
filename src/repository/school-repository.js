@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, literal } = require('sequelize');
 
 const { School } = require('../models/index');
 
@@ -48,6 +48,31 @@ class SchoolRepository {
             throw {error};
         }
     }
+
+    async listSchools(lat, lng, radius = null) {
+  try {
+    const distanceQuery = `
+      6371 * ACOS(
+        COS(RADIANS(${lat})) * COS(RADIANS(latitude)) *
+        COS(RADIANS(longitude) - RADIANS(${lng})) +
+        SIN(RADIANS(${lat})) * SIN(RADIANS(latitude))
+      )`;
+
+    const schools = await School.findAll({
+      attributes: {
+        include: [[literal(distanceQuery), "distance"]],
+      },
+        ...(radius && { having: literal(`distance < ${radius}`) }),
+      order: literal("distance ASC"),
+      raw: true, 
+    });
+
+    return schools;
+  } catch (error) {
+    console.log("Something went wrong in the repository layer");
+    throw error;
+  }
+};
 }
 
 module.exports = SchoolRepository;
