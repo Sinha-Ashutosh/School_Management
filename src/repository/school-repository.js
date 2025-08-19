@@ -3,9 +3,9 @@ const { Op, literal } = require('sequelize');
 const { School } = require('../models/index');
 
 class SchoolRepository {
-    async createSchool({ data }) {
+    async createSchool(data) {
         try{
-            const school = await School.create({data});
+            const school = await School.create(data);
             return school;
         } catch (error){
             console.log("Something went wrong in the repository level");

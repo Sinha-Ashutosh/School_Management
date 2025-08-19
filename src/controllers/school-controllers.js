@@ -5,7 +5,13 @@ const schoolServices = new SchoolServices();
 
 const create = async (req, res) => {
     try{
-        const school = await schoolServices.createSchool(req.body);
+        const data = {
+        name: req.body.name,
+        address: req.body.address,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+    };
+        const school = await schoolServices.createSchool(data);
         return res.status(201).json({
             data: school,
             success: true,
