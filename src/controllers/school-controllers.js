@@ -1,0 +1,93 @@
+const { response } = require('express');
+const { SchoolServices } = require('../services/index');
+
+const schoolServices = new SchoolServices();
+
+const create = async (req, res) => {
+    try{
+        const school = await schoolServices.createSchool(req.body);
+        return res.status(201).json({
+            data: school,
+            success: true,
+            message: 'Successfully created a school',
+            err: {}
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            data: {},
+            success: false,
+            message: 'Not able to create a school',
+            err: error
+        });
+    }
+}
+
+const destroy = async (req, res) => {
+    try{
+        const school = await schoolServices.deleteSchool(req.params.id);
+        return res.status(200).json({
+            data: response,
+            success: true,
+            message: 'Successfully deleted a school',
+            err: {}
+        });   
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            data: {},
+            success: false,
+            message: 'Not able to delete a school',
+            err: error
+        });
+    }   
+}
+
+// GET --> /city/:id
+const get = async (req, res) => {
+    try{ 
+        const school = await schoolServices.getSchool(req.params.id);
+        return res.status(200).json({
+            data: school,
+            success: true,
+            message: 'Successfully fetched a school',
+            err: {}
+        });   
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            data: {},
+            success: false,
+            message: 'Not able to get a school',
+            err: error
+        });
+    }
+}
+
+// Patch --> /city/:id --> req.body
+const update = async (req, res) => {
+    try{
+         const school = await schoolServices.updateSchool(req.params.id, req.body);
+        return res.status(200).json({
+            data: response,
+            success: true,
+            message: 'Successfully fetched a school',
+            err: {}
+        });   
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            data: {},
+            success: false,
+            message: 'Not able to update a school',
+            err: error
+        });
+    }
+}
+
+module.exports = {
+    create,
+    destroy,
+    update,
+    get
+}
